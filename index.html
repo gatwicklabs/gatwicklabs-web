@@ -1,173 +1,475 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="CUP은 노래 부르는 동영상을 업로드하고 음악·보컬 전문가에게 평가와 피드백을 받을 수 있는 플랫폼입니다." />
-  <title>GatwickLabs | CUP</title>
-  <style>
-    :root{
-      --bg:#080b14; --panel:#12182a; --text:#f7f8fb; --muted:#aab1c3;
-      --line:rgba(255,255,255,.10); --purple:#8b5cf6; --blue:#38bdf8;
-      --pink:#f472b6; --shadow:0 20px 60px rgba(0,0,0,.35); --radius:26px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0; font-family:Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(139,92,246,.18), transparent 28%),
-        radial-gradient(circle at 90% 10%, rgba(56,189,248,.15), transparent 26%),
-        var(--bg);
-      color:var(--text); line-height:1.65;
-    }
-    a{color:inherit;text-decoration:none}
-    .wrap{width:min(1180px, calc(100% - 40px)); margin:0 auto}
-    .nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(18px);background:rgba(8,11,20,.72);border-bottom:1px solid var(--line)}
-    .nav-inner{height:72px;display:flex;align-items:center;justify-content:space-between}
-    .brand{font-weight:800;letter-spacing:-.03em;font-size:1.18rem}.brand span{color:var(--blue)}
-    .nav-links{display:flex;gap:24px;align-items:center;color:#d8dbea;font-size:.95rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:999px;font-weight:700;border:1px solid var(--line);transition:.25s ease}
-    .btn-primary{background:linear-gradient(135deg,var(--purple),var(--blue));border-color:transparent;box-shadow:0 10px 30px rgba(88,80,236,.28)}
-    .btn-primary:hover{transform:translateY(-2px)}
-    .btn-ghost:hover{background:rgba(255,255,255,.06)}
-    .hero{min-height:88vh;display:grid;align-items:center;padding:84px 0 70px}
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid rgba(139,92,246,.35);background:rgba(139,92,246,.08);color:#d9ccff;font-size:.88rem;font-weight:700;margin-bottom:20px}
-    h1{margin:0;font-size:clamp(3rem,7vw,6.4rem);line-height:.98;letter-spacing:-.065em}
-    .grad{background:linear-gradient(90deg,#fff 0%,#d9ccff 35%,#9cdfff 72%,#f7b5d7 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .hero-copy{margin:28px 0 30px;color:var(--muted);font-size:clamp(1rem,1.6vw,1.2rem);max-width:650px}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}.hero-note{margin-top:20px;color:#777f94;font-size:.88rem}
-    .phone-wrap{position:relative;min-height:590px}
-    .orb{position:absolute;border-radius:50%;filter:blur(4px);opacity:.75}
-    .orb.one{width:240px;height:240px;background:rgba(139,92,246,.35);left:2%;top:5%}
-    .orb.two{width:200px;height:200px;background:rgba(56,189,248,.28);right:0;bottom:8%}
-    .phone{position:absolute;inset:0;margin:auto;width:min(330px,82%);height:580px;border-radius:42px;background:linear-gradient(165deg,#1a2034,#0c101c);border:1px solid rgba(255,255,255,.16);box-shadow:0 40px 100px rgba(0,0,0,.55), inset 0 0 0 7px #0a0e18;padding:18px;transform:rotate(3deg)}
-    .phone-screen{height:100%;border-radius:29px;overflow:hidden;position:relative;background:radial-gradient(circle at 30% 20%,rgba(244,114,182,.35),transparent 23%),radial-gradient(circle at 70% 15%,rgba(56,189,248,.32),transparent 28%),linear-gradient(180deg,#141a2c,#090c15 68%);padding:24px 18px}
-    .phone-top{display:flex;justify-content:space-between;color:#d6d9e3;font-size:.78rem}
-    .mini-card{margin-top:24px;padding:18px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09)}
-    .video{height:210px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(180deg,transparent,rgba(0,0,0,.45)),linear-gradient(135deg,rgba(139,92,246,.8),rgba(56,189,248,.55) 45%,rgba(244,114,182,.75))}
-    .video:before{content:"♪";position:absolute;font-size:84px;font-weight:800;left:50%;top:48%;transform:translate(-50%,-50%);opacity:.9}
-    .wave{display:flex;align-items:end;gap:4px;height:58px;margin-top:18px}
-    .wave i{display:block;width:7px;border-radius:8px;background:linear-gradient(var(--blue),var(--purple));animation:pulse 1.2s ease-in-out infinite}
-    .wave i:nth-child(1){height:20px}.wave i:nth-child(2){height:40px}.wave i:nth-child(3){height:28px}.wave i:nth-child(4){height:52px}.wave i:nth-child(5){height:34px}.wave i:nth-child(6){height:46px}.wave i:nth-child(7){height:22px}.wave i:nth-child(8){height:38px}.wave i:nth-child(9){height:52px}.wave i:nth-child(10){height:30px}
-    .wave i:nth-child(2n){animation-delay:.2s}.wave i:nth-child(3n){animation-delay:.35s}
-    @keyframes pulse{0%,100%{transform:scaleY(.75);opacity:.75}50%{transform:scaleY(1.1);opacity:1}}
-    .score-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
-    .score{padding:12px 8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;text-align:center}
-    .score b{display:block;font-size:1.25rem}.score span{font-size:.7rem;color:#aab1c3}
-    section{padding:100px 0}
-    .section-head{max-width:760px;margin-bottom:42px}.section-kicker{color:#9fdcff;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}
-    h2{font-size:clamp(2.1rem,4vw,3.7rem);line-height:1.08;letter-spacing:-.045em;margin:10px 0 16px}.section-head p{color:var(--muted);font-size:1.05rem}
-    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
-    .step-no{font-size:.8rem;color:#98a0b6;font-weight:800}.step-icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin:18px 0;background:linear-gradient(135deg,rgba(139,92,246,.22),rgba(56,189,248,.18));border:1px solid rgba(255,255,255,.1);font-size:1.45rem}
-    .card h3{margin:0 0 10px;font-size:1.2rem}.card p{margin:0;color:var(--muted);font-size:.95rem}
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.feature-card{min-height:250px;position:relative;overflow:hidden}
-    .pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.06);color:#d9dcec;font-size:.76rem;border:1px solid var(--line);margin-bottom:22px}
-    .criteria{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.criterion{display:flex;gap:14px;align-items:flex-start;padding:22px;border-bottom:1px solid var(--line)}
-    .criterion strong{display:block;margin-bottom:4px}.criterion small{color:var(--muted)}.dot{width:10px;height:10px;border-radius:50%;margin-top:8px;background:linear-gradient(135deg,var(--pink),var(--blue));box-shadow:0 0 22px rgba(139,92,246,.55)}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:stretch}
-    .statement{min-height:360px;border-radius:32px;padding:40px;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(circle at 80% 20%,rgba(56,189,248,.16),transparent 28%),radial-gradient(circle at 20% 0%,rgba(139,92,246,.18),transparent 30%),var(--panel);border:1px solid var(--line)}
-    .statement .big{font-size:clamp(2rem,4vw,4.2rem);font-weight:800;line-height:1;letter-spacing:-.05em}.statement p{color:var(--muted);max-width:520px}
-    .about-card{background:linear-gradient(180deg,#131a2e,#0e1322)}.about-list{display:grid;gap:14px;margin-top:26px}.about-list div{padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}
-    .cta{padding:86px 0 100px}.cta-box{text-align:center;padding:70px 28px;border-radius:36px;background:radial-gradient(circle at 15% 15%,rgba(244,114,182,.22),transparent 30%),radial-gradient(circle at 85% 20%,rgba(56,189,248,.22),transparent 28%),linear-gradient(135deg,#17122a,#0f1730 55%,#0d1723);border:1px solid var(--line);box-shadow:var(--shadow)}
-    .cta-box h2{max-width:780px;margin:0 auto 18px}.cta-box p{color:var(--muted);max-width:650px;margin:0 auto 28px}
-    footer{border-top:1px solid var(--line);padding:32px 0 50px;color:#8d94a7}.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-links{display:flex;gap:18px;flex-wrap:wrap}.tiny{font-size:.82rem}
-    @media(max-width:900px){.hero-grid,.split{grid-template-columns:1fr}.phone-wrap{min-height:560px}.steps{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:1fr}.criteria{grid-template-columns:repeat(2,1fr)}.nav-links a:not(.btn){display:none}}
-    @media(max-width:600px){.wrap{width:min(100% - 24px,1180px)}.hero{padding-top:54px}.steps,.criteria{grid-template-columns:1fr}.phone-wrap{min-height:500px}.phone{height:500px}.video{height:170px}section{padding:78px 0}.nav-inner{height:64px}.btn{padding:11px 16px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GatwickLabs CUP - Mobile Landing</title>
+<style>
+  :root{
+    --bg:#080B14;
+    --panel:#101827;
+    --panel2:#151F33;
+    --text:#FFFFFF;
+    --muted:#AAB4C7;
+    --purple:#7C3AED;
+    --blue:#38BDF8;
+    --pink:#EC4899;
+    --light:#F7F8FC;
+    --darktext:#182033;
+    --line:rgba(255,255,255,.10);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter, Pretendard, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  a{text-decoration:none;color:inherit}
+  .page{
+    width:100%;
+    max-width:430px;
+    margin:0 auto;
+    background:var(--bg);
+    min-height:100vh;
+    box-shadow:0 0 60px rgba(0,0,0,.25);
+  }
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    padding-top:max(14px, env(safe-area-inset-top));
+    background:rgba(8,11,20,.88);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{font-weight:900;letter-spacing:-.04em;font-size:18px}
+  .logo span{color:var(--blue)}
+  .topbtn{
+    font-size:13px;
+    font-weight:800;
+    padding:9px 13px;
+    border-radius:999px;
+    background:linear-gradient(135deg,var(--purple),var(--blue));
+  }
+  .hero{
+    padding:44px 20px 30px;
+    background:
+      radial-gradient(circle at 15% 5%, rgba(124,58,237,.28), transparent 34%),
+      radial-gradient(circle at 85% 18%, rgba(56,189,248,.18), transparent 30%),
+      var(--bg);
+  }
+  .eyebrow{
+    display:inline-flex;
+    gap:6px;
+    align-items:center;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.08em;
+    color:#C8B8FF;
+    padding:7px 10px;
+    border:1px solid rgba(124,58,237,.35);
+    border-radius:999px;
+    background:rgba(124,58,237,.08);
+  }
+  h1{
+    margin:18px 0 14px;
+    font-size:46px;
+    line-height:.98;
+    letter-spacing:-.06em;
+  }
+  .grad{
+    background:linear-gradient(90deg,#fff,#BEE7FF 55%,#F4B6D2);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p{
+    margin:0;
+    color:var(--muted);
+    font-size:16px;
+  }
+  .hero-actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:10px;
+    margin-top:22px;
+    padding:0 1px;
+  }
+  .btn{
+    display:block;
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    text-align:center;
+    padding:13px 12px;
+    border-radius:14px;
+    font-weight:900;
+    font-size:14px;
+    overflow:visible;
+    -webkit-background-clip:padding-box;
+    background-clip:padding-box;
+  }
+  .primary{
+    background:linear-gradient(135deg,var(--purple),var(--blue));
+  }
+  .ghost{
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.04);
+  }
+  .phone-card{
+    margin-top:28px;
+    padding:14px;
+    border-radius:24px;
+    background:linear-gradient(180deg,#121B2D,#0D1423);
+    border:1px solid var(--line);
+    box-shadow:0 20px 50px rgba(0,0,0,.32);
+  }
+  .video{
+    height:210px;
+    border-radius:18px;
+    background:
+      linear-gradient(180deg,transparent,rgba(0,0,0,.42)),
+      linear-gradient(135deg,rgba(124,58,237,.95),rgba(56,189,248,.68) 48%,rgba(236,72,153,.82));
+    position:relative;
+    overflow:hidden;
+  }
+  .video:before{
+    content:"♪";
+    position:absolute;
+    left:50%;
+    top:47%;
+    transform:translate(-50%,-50%);
+    font-size:84px;
+    font-weight:900;
+    color:white;
+    opacity:.95;
+  }
+  .video:after{
+    content:"노래 영상 미리보기";
+    position:absolute;
+    left:14px;
+    bottom:12px;
+    font-size:12px;
+    font-weight:800;
+    color:white;
+  }
+  .scores{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:10px;
+  }
+  .score{
+    text-align:center;
+    padding:12px 6px;
+    border-radius:14px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.07);
+  }
+  .score b{display:block;font-size:19px}
+  .score span{font-size:10px;color:var(--muted)}
+  section{padding:46px 20px}
+  .light{
+    background:var(--light);
+    color:var(--darktext);
+  }
+  .white{
+    background:white;
+    color:var(--darktext);
+  }
+  .dark{
+    background:var(--panel);
+  }
+  .purple{
+    background:linear-gradient(135deg,#4C1D95,var(--purple));
+  }
+  .kicker{
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.10em;
+    color:var(--blue);
+    text-transform:uppercase;
+  }
+  .light .kicker,.white .kicker{color:var(--purple)}
+  h2{
+    font-size:31px;
+    line-height:1.08;
+    letter-spacing:-.05em;
+    margin:8px 0 12px;
+  }
+  .lead{
+    margin:0;
+    color:var(--muted);
+    font-size:15px;
+  }
+  .light .lead,.white .lead{color:#667085}
+  .stack{
+    display:grid;
+    gap:12px;
+    margin-top:24px;
+  }
+  .card{
+    padding:18px;
+    border-radius:18px;
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--line);
+  }
+  .light .card,.white .card{
+    background:white;
+    border:1px solid #E6EAF0;
+    box-shadow:0 8px 20px rgba(15,23,42,.05);
+  }
+  .num{
+    font-size:11px;
+    font-weight:900;
+    color:#B8A3FF;
+    margin-bottom:6px;
+  }
+  .light .num,.white .num{color:var(--purple)}
+  .card h3{
+    margin:0 0 6px;
+    font-size:18px;
+    letter-spacing:-.02em;
+  }
+  .card p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+  }
+  .light .card p,.white .card p{color:#667085}
+  .criteria{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:22px;
+  }
+  .criterion{
+    min-height:120px;
+    padding:16px;
+    border-radius:16px;
+    border:1px solid #E7EAF0;
+    background:#fff;
+  }
+  .criterion strong{
+    display:block;
+    font-size:16px;
+    margin-bottom:6px;
+  }
+  .criterion span{
+    color:#667085;
+    font-size:13px;
+  }
+  .quote{
+    margin-top:20px;
+    padding:18px;
+    border-left:3px solid var(--blue);
+    background:rgba(255,255,255,.06);
+    border-radius:0 14px 14px 0;
+    font-weight:700;
+  }
+  .about-points{
+    display:grid;
+    gap:10px;
+    margin-top:20px;
+  }
+  .point{
+    padding:14px 15px;
+    border-radius:14px;
+    background:#F7F8FC;
+    border:1px solid #E8EBF2;
+    font-size:14px;
+    font-weight:700;
+  }
+  .cta{
+    text-align:center;
+    padding-bottom:100px;
+  }
+  .cta .btn{
+    display:block;
+    margin-top:20px;
+  }
+  footer{
+    padding:28px 20px 110px;
+    color:#8F99AC;
+    background:#060912;
+    border-top:1px solid var(--line);
+    font-size:12px;
+  }
+  .bottom-cta{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:0 auto;
+    transform:none;
+    width:100%;
+    max-width:430px;
+    padding:10px 14px max(10px, env(safe-area-inset-bottom));
+    background:rgba(8,11,20,.92);
+    backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);
+    z-index:30;
+  }
+  .bottom-cta a{
+    display:block;
+    width:calc(100% - 2px);
+    margin:0 1px;
+    box-sizing:border-box;
+    text-align:center;
+    font-weight:900;
+    padding:14px;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--purple),var(--blue));
+    -webkit-background-clip:padding-box;
+    background-clip:padding-box;
+  }
+  .guide{
+    font-size:12px;
+    color:#5F6673;
+    background:#FFF7D6;
+    border:1px solid #F0E0A5;
+    padding:12px 14px;
+    border-radius:12px;
+    margin-top:18px;
+  }
+</style>
 </head>
 <body>
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <a href="#top" class="brand">Gatwick<span>Labs</span></a>
-      <nav class="nav-links">
-        <a href="#cup">CUP</a><a href="#how">How it works</a><a href="#evaluation">Evaluation</a><a href="#about">About</a>
-        <a href="#contact" class="btn btn-primary">CUP 알아보기</a>
-      </nav>
+<div class="page">
+
+  <div class="topbar">
+    <div class="logo">Gatwick<span>Labs</span></div>
+    <a class="topbtn" href="#start">CUP 시작</a>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">🎤 VOCAL VIDEO · EXPERT FEEDBACK</div>
+    <h1><span class="grad">당신의 노래를<br>전문가에게.</span></h1>
+    <p>CUP은 노래 부르는 동영상을 업로드하고, 음악·보컬 전문가의 평가와 피드백을 받을 수 있는 플랫폼입니다.</p>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="#how">사용 방법</a>
+      <a class="btn ghost" href="#evaluation">평가 항목</a>
     </div>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow">🎤 VOCAL VIDEO · EXPERT FEEDBACK</div>
-          <h1><span class="grad">당신의 노래를<br>전문가에게.</span></h1>
-          <p class="hero-copy">CUP은 노래 부르는 동영상을 업로드하고, 음악·보컬 전문가의 평가와 피드백을 받을 수 있는 플랫폼입니다. 혼자서는 알기 어려운 강점과 개선점을 더 명확하게 확인해보세요.</p>
-          <div class="hero-actions"><a class="btn btn-primary" href="#how">CUP 사용 방법</a><a class="btn btn-ghost" href="#evaluation">평가 항목 보기</a></div>
-          <div class="hero-note">Sing · Upload · Get Evaluated · Grow</div>
-        </div>
-        <div class="phone-wrap" aria-label="CUP 앱 미리보기 목업">
-          <span class="orb one"></span><span class="orb two"></span>
-          <div class="phone"><div class="phone-screen">
-            <div class="phone-top"><span>9:41</span><span>CUP</span></div>
-            <div class="mini-card"><div class="video"></div>
-              <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="score-row"><div class="score"><b>92</b><span>Pitch</span></div><div class="score"><b>88</b><span>Rhythm</span></div><div class="score"><b>94</b><span>Expression</span></div></div>
-            </div>
-          </div></div>
-        </div>
+    <div class="phone-card">
+      <div class="video"></div>
+      <div class="scores">
+        <div class="score"><b>92</b><span>Pitch</span></div>
+        <div class="score"><b>88</b><span>Rhythm</span></div>
+        <div class="score"><b>94</b><span>Expression</span></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="cup"><div class="wrap"><div class="section-head">
-      <div class="section-kicker">Meet CUP</div><h2>노래를 부르는 것에서,<br>성장하는 경험으로.</h2>
-      <p>CUP은 단순한 영상 공유를 넘어, 전문가의 시선으로 자신의 퍼포먼스를 이해하고 다음 도전을 위한 구체적인 피드백을 얻을 수 있도록 설계된 서비스입니다.</p>
-    </div></div></section>
+  <section class="white">
+    <div class="kicker">Meet CUP</div>
+    <h2>노래를 부르는 것에서,<br>성장하는 경험으로.</h2>
+    <p class="lead">전문가의 시선으로 자신의 퍼포먼스를 이해하고, 다음 도전을 위한 구체적인 피드백을 받아보세요.</p>
+  </section>
 
-    <section id="how"><div class="wrap">
-      <div class="section-head"><div class="section-kicker">How it works</div><h2>4단계면 충분합니다.</h2><p>복잡한 절차 없이, 노래하고 올리고 평가받고 성장하세요.</p></div>
-      <div class="steps">
-        <article class="card"><div class="step-no">01</div><div class="step-icon">🎙️</div><h3>노래 부르기</h3><p>좋아하는 곡을 선택하고 자신의 목소리와 퍼포먼스를 영상으로 남겨보세요.</p></article>
-        <article class="card"><div class="step-no">02</div><div class="step-icon">⬆️</div><h3>영상 업로드</h3><p>촬영한 노래 영상을 CUP에 올리고 전문가 평가를 요청합니다.</p></article>
-        <article class="card"><div class="step-no">03</div><div class="step-icon">⭐</div><h3>전문가 평가</h3><p>음악·보컬 전문가가 영상을 확인하고 다양한 관점에서 평가합니다.</p></article>
-        <article class="card"><div class="step-no">04</div><div class="step-icon">📈</div><h3>피드백으로 성장</h3><p>평가와 피드백을 바탕으로 강점과 개선점을 확인하고 다시 도전합니다.</p></article>
+  <section class="light" id="how">
+    <div class="kicker">How it works</div>
+    <h2>4단계면 충분합니다.</h2>
+    <div class="stack">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>🎙️ 노래 부르기</h3>
+        <p>좋아하는 곡을 부르고 자신의 퍼포먼스를 영상으로 남깁니다.</p>
       </div>
-    </div></section>
-
-    <section><div class="wrap">
-      <div class="section-head"><div class="section-kicker">Core Features</div><h2>단순한 점수가 아니라,<br>다음 방향을 보여주는 피드백.</h2></div>
-      <div class="features">
-        <article class="card feature-card"><span class="pill">VIDEO</span><h3>노래 영상 업로드</h3><p>직접 노래 부르는 영상을 기록하고 공유하면서 자신의 퍼포먼스를 축적할 수 있습니다.</p></article>
-        <article class="card feature-card"><span class="pill">EXPERT</span><h3>전문가 평가</h3><p>보컬·음악 전문가가 실제 영상을 보고 노래의 완성도와 특징을 평가합니다.</p></article>
-        <article class="card feature-card"><span class="pill">FEEDBACK</span><h3>구체적인 성장 포인트</h3><p>단순한 “잘한다/못한다”를 넘어, 무엇을 유지하고 무엇을 개선할지 방향을 확인합니다.</p></article>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>⬆️ 영상 업로드</h3>
+        <p>촬영한 노래 영상을 CUP에 올리고 전문가 평가를 요청합니다.</p>
       </div>
-    </div></section>
-
-    <section id="evaluation"><div class="wrap">
-      <div class="section-head"><div class="section-kicker">Evaluation</div><h2>내 노래를 다양한 관점에서.</h2><p>아래 항목은 예시입니다. 실제 CUP의 평가 기준에 맞춰 항목명과 설명을 조정하세요.</p></div>
-      <div class="criteria">
-        <div class="criterion"><span class="dot"></span><div><strong>Pitch · 음정</strong><small>음정의 정확성과 안정감</small></div></div>
-        <div class="criterion"><span class="dot"></span><div><strong>Rhythm · 리듬</strong><small>박자와 프레이징의 자연스러움</small></div></div>
-        <div class="criterion"><span class="dot"></span><div><strong>Tone · 음색</strong><small>목소리의 개성과 매력</small></div></div>
-        <div class="criterion"><span class="dot"></span><div><strong>Expression · 표현력</strong><small>감정 전달과 곡 해석</small></div></div>
-        <div class="criterion"><span class="dot"></span><div><strong>Technique · 테크닉</strong><small>발성, 호흡, 고음 처리 등</small></div></div>
-        <div class="criterion"><span class="dot"></span><div><strong>Overall · 종합</strong><small>전체 퍼포먼스의 완성도</small></div></div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>⭐ 전문가 평가</h3>
+        <p>음악·보컬 전문가가 영상을 직접 확인하고 평가합니다.</p>
       </div>
-    </div></section>
-
-    <section><div class="wrap split">
-      <div class="statement"><div class="section-kicker">Our Belief</div><div class="big">Turn Your<br>Performance<br>Into Progress.</div><p>한 번의 노래가 기록이 되고, 한 번의 피드백이 다음 성장을 위한 기준이 됩니다.</p></div>
-      <div class="card about-card" id="about">
-        <div class="section-kicker">About GatwickLabs</div><h2 style="font-size:2.4rem">사람의 재능이<br>더 잘 보이도록.</h2>
-        <p style="color:var(--muted)">GatwickLabs는 사람들이 자신의 재능을 발견하고 더 나은 경험으로 성장할 수 있는 디지털 서비스를 만듭니다. 첫 번째 서비스 CUP을 통해 노래를 좋아하는 사용자와 음악·보컬 전문가를 연결하고, 영상과 전문적인 피드백을 기반으로 한 새로운 보컬 성장 경험을 만들어가고 있습니다.</p>
-        <div class="about-list"><div>🎵 Creator-first music experience</div><div>🧑‍🏫 Expert-driven feedback</div><div>📱 Simple, mobile-first product</div></div>
+      <div class="card">
+        <div class="num">04</div>
+        <h3>📈 피드백으로 성장</h3>
+        <p>강점과 개선점을 확인하고 더 좋은 퍼포먼스에 다시 도전합니다.</p>
       </div>
-    </div></section>
+    </div>
+  </section>
 
-    <section class="cta" id="contact"><div class="wrap"><div class="cta-box">
-      <div class="section-kicker">Start with CUP</div><h2>당신의 노래,<br>이제 전문가에게 들려주세요.</h2>
-      <p>노래 부르는 영상을 업로드하고, 전문가의 평가를 통해 자신의 강점과 다음 성장 포인트를 확인하세요.</p>
-      <a class="btn btn-primary" href="#top">CUP 소개 보기</a>
-    </div></div></section>
-  </main>
+  <section class="dark">
+    <div class="kicker">Core Features</div>
+    <h2>점수보다 중요한 건,<br>다음 방향입니다.</h2>
+    <div class="stack">
+      <div class="card">
+        <h3>📹 노래 영상 업로드</h3>
+        <p>직접 노래 부르는 모습을 영상으로 기록하고 공유할 수 있습니다.</p>
+      </div>
+      <div class="card">
+        <h3>🧑‍🏫 전문가 평가</h3>
+        <p>보컬·음악 전문가가 실제 퍼포먼스를 보고 평가합니다.</p>
+      </div>
+      <div class="card">
+        <h3>💬 구체적인 피드백</h3>
+        <p>잘한 점과 개선할 점을 구체적으로 확인할 수 있습니다.</p>
+      </div>
+    </div>
+  </section>
 
-  <footer><div class="wrap footer-inner">
-    <div><div class="brand">Gatwick<span>Labs</span></div><div class="tiny">CUP · Vocal Video Evaluation Platform</div></div>
-    <div class="footer-links tiny"><a href="#cup">CUP</a><a href="#about">About</a><a href="#">Privacy Policy</a><a href="#">Terms</a></div>
-    <div class="tiny">© 2026 GatwickLabs. All rights reserved.</div>
-  </div></footer>
+  <section class="white" id="evaluation">
+    <div class="kicker">Evaluation</div>
+    <h2>내 노래를<br>다양한 관점에서.</h2>
+    <div class="criteria">
+      <div class="criterion"><strong>Pitch · 음정</strong><span>정확성과 안정감</span></div>
+      <div class="criterion"><strong>Rhythm · 리듬</strong><span>박자와 프레이징</span></div>
+      <div class="criterion"><strong>Tone · 음색</strong><span>목소리의 개성과 매력</span></div>
+      <div class="criterion"><strong>Expression · 표현력</strong><span>감정 전달과 곡 해석</span></div>
+      <div class="criterion"><strong>Technique · 테크닉</strong><span>발성·호흡·고음 처리</span></div>
+      <div class="criterion"><strong>Overall · 종합</strong><span>전체 퍼포먼스 완성도</span></div>
+    </div>
+    <div class="guide">※ 평가 항목은 예시이며, 실제 CUP 기준에 맞춰 수정하면 됩니다.</div>
+  </section>
+
+  <section class="purple">
+    <div class="kicker" style="color:#D7F0FF">Our Belief</div>
+    <h2>Turn Your Performance<br>Into Progress.</h2>
+    <p>한 번의 노래가 기록이 되고, 한 번의 피드백이 다음 성장을 위한 기준이 됩니다.</p>
+    <div class="quote">내 목소리를 객관적으로 이해하는 것이 성장의 시작입니다.</div>
+  </section>
+
+  <section class="white">
+    <div class="kicker">About GatwickLabs</div>
+    <h2>사람의 재능이<br>더 잘 보이도록.</h2>
+    <p class="lead">GatwickLabs는 사람들이 자신의 재능을 발견하고 더 나은 경험으로 성장할 수 있는 디지털 서비스를 만듭니다.</p>
+    <div class="about-points">
+      <div class="point">🎵 노래를 좋아하는 사용자 중심</div>
+      <div class="point">🧑‍🏫 전문가 기반의 평가와 피드백</div>
+      <div class="point">📱 쉽고 직관적인 모바일 경험</div>
+    </div>
+  </section>
+
+  <section class="dark cta" id="start">
+    <div class="kicker">Start with CUP</div>
+    <h2>당신의 노래,<br>이제 전문가에게 들려주세요.</h2>
+    <p class="lead">노래 영상을 업로드하고 전문가의 평가를 통해 강점과 다음 성장 포인트를 확인하세요.</p>
+    <a class="btn primary" href="#">CUP 시작하기</a>
+  </section>
+
+  <footer>
+    <strong style="color:white">GatwickLabs</strong><br>
+    CUP · Vocal Video Evaluation Platform<br><br>
+    Privacy Policy · Terms · Contact<br><br>
+    © 2026 GatwickLabs. All rights reserved.
+  </footer>
+</div>
+
+<div class="bottom-cta">
+  <a href="#start">CUP 시작하기</a>
+</div>
 </body>
 </html>
